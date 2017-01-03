@@ -142,7 +142,7 @@ reachable from a given initial state to the same type (abstract node).
 
 We identify several common desirable properties
 for implementations to possess.
-We gave elsewhere the outline of their formalization in Agda,
+We outlined elsewhere how to formalize them in Agda,
 together with many variants;
 but we like to illustrate the simpler properties
 as in @(Figure-ref "fig-properties"):
@@ -177,9 +177,11 @@ possible choices in case of non-determinism or I/O, etc.).
 
 @emph{Completeness} enables the high-level user to arbitrarily influence
 low-level evaluation.
-In labeled transition systems, it means the implementation is
-a simulation. @; @~cite[Simulation] XXX
-It is essential for debugging, but has many other uses.
+In labeled transition systems, it means the implementation matches
+the usual notion of a @emph{simulation}. @; @~cite[Simulation] XXX
+It is essential for debugging, but has many other uses;
+notably, observability below is not composable,
+but the conjunction of observability and completeness is.
 
 There are many variants of @emph{liveness}, the property says that
 for @q{long enough} runs of the concrete computation,
@@ -249,24 +251,125 @@ and is in the not-advancing subcategory @m{C^0} of @m{C}:
 
 By applying this extraction strategy systematically, we obtain a protocol
 to deal with implementations as first-class objects,
-where each property defines a trait for typeclasses of implementations.
-Actually, we obtain two protocols: one where the concrete computation
-remains a first-class object and running it is a matter of formal reasoning,
+where each property defines a trait for typeclasses of implementations,
+and suitable typeclass define categories of computations and implementations.
+Actually, we obtain two protocols:
+in the first, @emph{reified} protocol,
+nodes @emph{and arrows} of the computations remain first-class objects and
+@q{running} the computation is a matter of formal reasoning,
 with any side-effects being representations;
-and one where the concrete computation is the "current" ambient computation,
-and running it causes side-effects to "actually" happen.
+in the second, @emph{reflective} protocol,
+the concrete computation is the @q{current} ambient computation,
+and running it causes side-effects to @q{actually} happen
+(as far as the metaprogram manipulating
+the represented computation is concerned).
+The key functions to switch between these two protocols are
+@tt{perform.node: Node → State} and
+@tt{perform.arrow: Arrow → State → Effect State} where
+@tt{Effect} is a suitable monad --- and their @q{inverses}
+@tt{record.node: State → Node} and
+@tt{record.arrow: State → (State → Effect State) → Effect Arrow}.
+The reflective protocol enables navigation up and down
+a computation's semantic tower --- while it is running.
 
 
-lorem ipsum aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa.
+@subsection{The Semantic Tower}
 
+@(figure
+  "fig-compilation"
+  "A few ways to think about implementations"
+  (figure-table
+   `(("decomposing" "Composition")
+     ;;("compilationxI" "Implementation")
+     ;;("compilationxII" "Compilation 2")
+     ("compilationxIII" "Compilation")
+     ("abstractInterpretation" "Static analysis"))))
 
-@subsection{Reinterpreting Known Phenomena}
+Modeling computations as first-class categories
+can shed a new light on familiar processes.
+
+Implementations can be composed and decomposed: thus,
+complex implementations can be broken down into
+many simple passes of compilation;
+languages can be implemented by composing a layer on top of previous ones;
+and instrumentation or virtualization can be achieved
+by composing new layers at the bottom.
+Computations are thus part of a @emph{semantic tower}, made of all the layers
+composed between the abstract computation specified by the user and
+the underlying hardware (or physical universe).
+
+A naïve user could view a compiler as implementing his user-provided source code
+being an abstract computation @m{A} with some object code @m{C}.
+But the source code @m{S} is only
+a representation of the actual abstract computation @m{A} desired by the user;
+this computation is defined up to an equivalence class, so
+an optimizing compiler can rewrite it into any of the equivalent computations.
+However, the equivalence class @m{A} is not computable,
+but the model @m{U} of equivalences understood by the compiler is,
+so between the two is an irreducible @emph{semantic gap}
+that algorithms can never fill.
+Now you can add static analysis to the picture, whereby some source programs
+can be proven to be in a subset where all nodes have static type @m{\tau},
+at which point specialized variants @m{A_\tau}, @m{U_\tau} and @m{C_\tau}
+can be used based on this knowledge.
+
+Many other topics can be reviewed in this light.
+Tweaking optimizations is about modifying @m{U} in the above model.
+Refactoring is changing @m{S} while keeping @m{U} constant.
+Developing is modifying @m{A} as being the user's desired approximation
+of the trivial abstract computation @m{\top} on top of all semantic towers.
+Aspect-oriented programming becomes constraint logic metaprogramming
+whereby multiple computations @m{A_i} each have a forgetful interpretation
+to a joint computation @m{J}, and a concrete computation @m{C} is sought that
+simultaneously implements all of them (and makes the diagram commute).
+In general the tower is not a linear total order, but an arbitrary category,
+where developers may focus on some aspects and ignore others depending on
+the level of abstraction at which appear the issues they are battling with.
+
+And now this semantic tower can be explored and modified at runtime,
+explicitly by the user, or implicitly by his software proxies.
 
 @section{Runtime Reflection}
 
 @subsection{Migration}
 
+Our reflective protocol trivializes the notion of code @emph{migration}:
+a given abstract computation @m{A} can be implemented with a computation @m{C}
+with an interpretation @m{\Phi};
+and if @m{\Phi} is @emph{observable}, then @m{C} can be interrupted,
+an abstract state can be retrieved from its concrete state,
+and can be recompiled to another computation @m{K} with an interpretation @m{\Psi},
+from which the computation resumes @emph{with all its dynamic state}.
+Of course, any intermediate representation of states of @m{A} can hopefully
+be optimized away when compiling @m{\Psi^{-1}\circ\Phi};
+but as a fallback, it is trivial to implement this migration naïvely.
+
+Many existing phenomena can be seen as migration:
+obviously, moving processes from one computer to another while it's running;
+which given a high-level language can now be done
+despite very different hardware architectures,
+without introducing some slow common virtual machine.
+But Garbage Collection can also be seen as a change of representation
+of an abstract graph using addressed memory cells.
+Process synchronization can be seen as observing a collection of
+two (or more) processes as a shared abstract computation then switching back
+to a concrete view after effecting the high-level communication.
+Zero-copy routing can be seen as changing the interpretation function
+regarding who owns the buffers and what they mean, without copying any bits.
+JIT compilation, software upgrade (including database schema upgrade),
+dynamic refactoring, can be viewed as migration.
+
+Our conceptual framework will hopefully make it easier to develop these
+difficult transformations in a provably correct way,
+and to automate migration, refactoring, upgrade, optimization, etc.,
+of server processes without loss of service or corruption of data
+when the short useful life of the underlying software and hardware stacks
+is all too predictable.
+
 @subsection{Natural Transformations}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
 
 @section{Reflective Architecture}
 
@@ -277,6 +380,8 @@ lorem ipsum aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaa
 
 
 @section{Conclusion and Future Work}
+
+The key concept missing in existing system is a general notion of observability.
 
 @; @hyperlink["https://common-lisp.net/"]{Common Lisp}, @; XXX @~cite[CLHS]
 

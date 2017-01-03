@@ -20,7 +20,7 @@ install: fci.html fci.pdf
 	donuts.pl unhtml < $< | wc
 
 %.PDF: %.pdf
-	evince -f -i $${p:-1} $<
+	xpdf -z page -fullscreen $< $${p:-1}
 
 %.pdf: %.scrbl ${src}
 	time scribble --dest-name $@ --pdf $<
