@@ -18,16 +18,8 @@
    "utils.rkt")
 
 @;; This directory contains .pdf for the figures...
-@(define build-dir "/home/fare/fare/phdthesis/build")
-@(define (figure-table ps)
-   (tabular
-     (list
-       (separate-list (spacing)
-         (map (λ (x) (centered (image
-                       (format "~a/fig-~a.pdf" build-dir (car x)))))
-              ps))
-       (separate-list (spacing)
-         (map (λ (x) (centered (cadr x))) ps)))))
+@(define figure-dir "/home/fare/fare/phdthesis/build")
+@(define (figure-table ps) (make-figure-table ps figure-dir))
 
 @author[#|#:affil-no "1"|#]{François-René Rideau}
 @;@affil[#:affil-no "1"]{TUNES}

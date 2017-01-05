@@ -9,6 +9,8 @@
   scribble/manual
   scriblib/autobib
   scriblib/footnote
+  scribble/html-properties
+  scriblib/render-cond
   (for-syntax syntax/parse))
 
 (provide (all-defined-out))
@@ -86,7 +88,48 @@
 (define (raw-latex . args)
   (element (style "relax" '(exact-chars)) args))
 
-@(define (spacing) @raw-latex{~~~~~~})
-@(define (separate-list sep l)
-   (if (or (null? l) (null? (cdr l))) l
-       (cons (car l) (cons sep (separate-list sep (cdr l))))))
+(define (element-with-render-mode f)
+  (cond-element
+    [html (f 'html)]
+    [latex (f 'latex)]
+    ;;[text (f 'text)]
+    [else (error "Unsupported render mode")]))
+
+(define (block-with-render-mode f)
+  (cond-block
+    [html (f 'html)]
+    [latex (f 'latex)]
+    ;;[text (f 'text)]
+    [else (error "Unsupported render mode")]))
+
+(define (spacing)
+  (element-with-render-mode
+   (λ (mode)
+     (case mode
+       [(html) " "]
+       [(latex) (raw-latex "~~~~~~")]))))
+
+(define (separate-list sep l)
+  (if (or (null? l) (null? (cdr l))) l
+      (cons (car l) (cons sep (separate-list sep (cdr l))))))
+
+(define (image-type mode)
+  (case mode
+    [(html) "png"]
+    [(latex) "pdf"]))
+
+
+(define (make-figure-table ps figure-dir)
+  (block-with-render-mode
+   (λ (mode)
+     (let ([image-path (λ (x) (format "~a/fig-~a" figure-dir (car x)))]
+           [scale (case mode [(html) 1/3] [(latex) 1])])
+       (tabular
+        (list
+         (separate-list
+          (spacing)
+          (map (λ (x) (centered (image #:suffixes '(".pdf" ".png") #:scale scale (image-path x))))
+               ps))
+         (separate-list
+          (spacing)
+          (map (λ (x) (centered (cadr x))) ps))))))))

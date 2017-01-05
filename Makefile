@@ -10,7 +10,7 @@ pdf: ${ae}.pdf
 PDF: pdf ${ae}.PDF
 
 install: fci.html fci.pdf
-	rsync -av --delete $^ *.js *.css ~/files/fci2017/
+	rsync -av --delete $^ *.js *.css *.png ~/files/fci2017/
 	rsync -av --delete ~/files/fci2017/ bespin:files/fci2017/
 
 %.W: %.html
