@@ -38,3 +38,6 @@ clean:
 
 mrproper:
 	git clean -xfd
+
+snapl2017.pdf: snapl2017cover.pdf fci.pdf
+	pdfjoin -o $@ $^
