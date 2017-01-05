@@ -9,8 +9,8 @@ Viewing the article
 
 HTML and PDF versions of this article can be found here:
 
-  * http://fare.tunes.org/files/fci2017/fci2017.html
-  * http://fare.tunes.org/files/fci2017/fci2017.pdf
+  * http://fare.tunes.org/files/fci2017/fci.html
+  * http://fare.tunes.org/files/fci2017/fci.pdf
 
 
 Notes
