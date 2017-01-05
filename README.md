@@ -1,5 +1,5 @@
-First-Class Implementations
-===========================
+Reflection with First-Class Implementations
+===========================================
 
 This is my proposal for a paper at
 [SNAPL 2017](http://snapl.org/2017/cfp.html).
