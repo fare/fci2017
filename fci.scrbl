@@ -41,16 +41,14 @@
 
 @abstract{
 We propose an approach to reconcile formal methods and computational reflection.
-First we formalize a notion of implementation between two computations,
-and a few key desirable properties of these implementations,
-notably a notion we call observability.
-We then propose a protocol based on first-class implementations that
+First, we formalize notions such as computation, implementation,
+and the desirable properties of implementations, notably observability;
+Next, we propose a protocol based on first-class implementations that
 enables navigation up and down the semantic tower of a computation
-@emph{at runtime}.
-We suggest how such a protocol can
-generalize many well-known software techniques and
-trivialize some difficult ones (like code migration).
-Finally we envision how making virtualization a first-class
+@emph{at runtime}, and suggest how such a protocol can
+generalize well-known software techniques and
+trivialize some difficult ones (like code migration);
+Finally, we envision how making virtualization a first-class
 programming construct enables a new software architecture.
 }
 
@@ -62,29 +60,34 @@ first-class implementations,
 reflection,
 }
 
-@XXX{
 @section{Introduction}
 
 @subsection{Category Theory}
-}
+We formalize computation using Category Theory. As a full discussion
+of Category Theory lies outside the scope of this paper, we summarize
+the relevant aspects. @note{Readers familiar with graphs may find it
+helpful to analogize categories as @emph{the transitive closure of a
+directed multigraph}, bearing in mind that cycles are permitted.}
+(a) a category @m{A} contains a nonempty set of nodes (or @emph{objects}),
+and a set of arrows (or @emph{morphisms}) from one object to another;
+(b) in addition to morphisms connecting distinct objects, categories
+contain @emph{identity morphisms} from each object to itself, and
+objects can be identified by their identity morphism;
+(c) morphisms within a category are @emph{transitive}; that is, for
+any three distinct nodes A, B, and C, a morphism exists from A to C
+@emph{if and only if} morphisms exist from A to B and B to C;
+(d) a @emph{functor} maps the nodes and morphisms of one category to
+those of another, preserving relevant structure (at the very least,
+the structure of which nodes are connected by morphisms).
+
+Informally, a category @m{B} is said to be a @emph{subcategory} of @m{A}
+if @m{B}'s objects and morphisms are subsets of @m{A}'s, respectively; and
+@m{B} is said to be a @emph{full} subcategory when @m{B} contains all
+morphisms in @m{A} connecting the objects it shares with @m{B}.
 
 @section{Implementations}
 
 @subsection{Computations as Categories}
-
-We make extremely elementary use of Category Theory to formalize computations.
-All you need to know is that:
-(a) a Category has a set of nodes, and
-a (possibly empty) set of arrows between each pair of nodes
-(mathematicians say object for node and morphism for arrow);
-(b) an arrow that starts at a node can be composed with an arrow that ends at it,
-yielding an arrow in the category;
-(c) each node has an identity arrow that starts and ends at it
-and is neutral for composition
-(nodes can be each identified with its identity arrow);
-(d) functors are functions that map a category to another one
-(both nodes and arrows) and preserve their structure above
-(as well as any additional structure one may consider).
 
 We consider a @emph{computation} as a category in which
 nodes are the potential states of the computation and
@@ -119,13 +122,8 @@ continuous computations, infinite ones with finite ones,
 non-deterministic with deterministic ones, etc., and vice-versa.
 However, category theory is usually presented in terms of total functions,
 so we define a partial functor @m{\Phi} from @m{C} to @m{A} as the data of
-(1) a full @note{
-  Full means @m{O} is characterized by its nodes being
-  a subset of those of @m{C}, and the arrows between two nodes in @m{O}
-  the same as the arrows between the nodes considered as being in @m{C}.
-  @; as characterized by the canonical full embedding @m{j : O → C}).
-} subcategory @m{O} of the observable states of @m{C},
-and (2) a (total) functor @m{\phi : O → A}.
+(1) a full subcategory @m{O} of the observable states of @m{C}, and (2) a
+(total) functor @m{\phi : O → A}.
 @XXX{
   Equivalently, the partial functor can be defined as
   a span from @m{C} to @m{A} where the functor to @m{C} is a full embedding,

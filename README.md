@@ -17,7 +17,7 @@ Notes
 -----
 
 These ideas are based on my work with the TUNES project in the 1990s.
-I made a presentation on this ideas at BostonHaskell in 2016,
+I made a presentation on this idea at BostonHaskell in 2016,
 with a video at <https://youtu.be/heU8NyX5Hus> and
 the slides at <http://fare.tunes.org/files/cs/fci-bh2016.pdf>.
 My resurrected PhD thesis on this topic (in progress) can be found at:
