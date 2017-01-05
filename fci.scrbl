@@ -62,21 +62,42 @@ first-class implementations,
 reflection,
 }
 
+@XXX{
+@section{Introduction}
+
+@subsection{Category Theory}
+}
+
 @section{Implementations}
 
 @subsection{Computations as Categories}
 
-We formalize a @emph{computation} as a category in which
+We make extremely elementary use of Category Theory to formalize computations.
+All you need to know is that:
+(a) a Category has a set of nodes, and
+a (possibly empty) set of arrows between each pair of nodes
+(mathematicians say object for node and morphism for arrow);
+(b) an arrow that starts at a node can be composed with an arrow that ends at it,
+yielding an arrow in the category;
+(c) each node has an identity arrow that starts and ends at it
+and is neutral for composition
+(nodes can be each identified with its identity arrow);
+(d) functors are functions that map a category to another one
+(both nodes and arrows) and preserve their structure above
+(as well as any additional structure one may consider).
+
+We consider a @emph{computation} as a category in which
 nodes are the potential states of the computation and
 arrows are the transitions between those states;
 arrows between the same nodes are distinguished by their side-effects if any.
-This approach has three advantages:
+This approach has two advantages:
 (1) it unifies a wide range of popular formalisms, including
 operational semantics, labeled transition systems, term rewriting,
 modal logic, partial orders, etc.;
-(2) it gives us many structural theorems @q{for free};
-(3) it lends itself to extracting programs from proofs.
-@; (which we will later take advantage of.)
+(2) by using the versatile mathematical tool that is category theory,
+we get many structural theorems @q{for free},
+including the ability to extract programs from proofs
+using the Curry-Howard correspondance.
 
 An @emph{interpretation} of a concrete computation @m{C} as
 an abstract computation @m{A} is
@@ -84,8 +105,8 @@ a @emph{partial} functor @m{\Phi} from @m{C} to @m{A}.
 An @emph{implementation} of @m{A} with @m{C} is the inverse @; (as a profunctor)
 of an interpretation of @m{C} as @m{A},
 i.e. it is a non-deterministic partial injective co-functor.
-Interpretations (resp. implementations) are the morphisms of
-a category of computations (resp. its dual).
+Interpretations are the morphisms of a category of computations;
+implementations are the morphisms of its dual category.
 
 Partiality expresses the fact that most computation states and transitions
 are intermediate states with no direct meaning
@@ -94,12 +115,14 @@ non-atomic transfer of resources between two accounts;
 only @emph{observable} concrete states can be interpreted
 as having an abstract meaning.
 Partiality allows discrete computations to be implemented with
-discrete computations, infinite ones with finite ones,
+continuous computations, infinite ones with finite ones,
 non-deterministic with deterministic ones, etc., and vice-versa.
 However, category theory is usually presented in terms of total functions,
 so we define a partial functor @m{\Phi} from @m{C} to @m{A} as the data of
 (1) a full @note{
-  Full means it is a subset of the nodes with all the arrows between them.
+  Full means @m{O} is characterized by its nodes being
+  a subset of those of @m{C}, and the arrows between two nodes in @m{O}
+  the same as the arrows between the nodes considered as being in @m{C}.
   @; as characterized by the canonical full embedding @m{j : O → C}).
 } subcategory @m{O} of the observable states of @m{C},
 and (2) a (total) functor @m{\phi : O → A}.
