@@ -85,6 +85,7 @@
 (define (phi) "φ")
 (define (Psi) "Ψ")
 (define (psi) "ψ")
+(define (circ) "∘")
 
 (define (raw-latex . args)
   (element (style "relax" '(exact-chars)) args))
@@ -139,3 +140,14 @@
 (define (page-numbers-off)
   (elem ""
    #:style (make-style "pageStyleEmpty" (list (make-tex-addition "page-numbers-off.sty")))))
+
+(define-syntax-rule (htmlonly body ...)
+  (cond-element [html (list body ...)] [else '()]))
+(define-syntax-rule (htmlonlyblock body ...)
+  (cond-block [html (list body ...)] [else '()]))
+(define-syntax-rule (pdfonly body ...)
+  (cond-element [latex (list body ...)] [else '()]))
+(define-syntax-rule (pdfonlyblock body ...)
+  (cond-block [latex (list body ...)] [else '()]))
+
+(define (htmlonlyspace) (htmlonly " "))

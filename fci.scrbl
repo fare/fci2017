@@ -21,36 +21,38 @@
 @(define figure-dir "/home/fare/fare/phdthesis/build")
 @(define (figure-table ps) (make-figure-table ps figure-dir))
 
-@author[#|#:affil-no "1"|#]{François-René Rideau}
-@;@affil[#:affil-no "1"]{TUNES}
+@author[#:affil-no ""]{@(htmlonlyspace)François-René Rideau}
+@; @affil[#:affil-no "1"]{@(htmlonlyspace)TUNES}
 
-@copyright{François-René Rideau}
-@doi{10.4230/LIPIcs.xxx.yyy.p}
-@volume-info["(editors)" "2" "SNAPL 2017" "1" "1" "1"]
+@copyright{} @; François-René Rideau}
+@doi{} @;10.4230/LIPIcs.xxx.yyy.p}
+@volume-info["(SNAPL editors)" "2" "SNAPL 2017" "1" "1" "1"]
 @event-short-name{SNAPL 2017}
 
 @title{Reflection with First-Class Implementations}
 
 @abstract{
-We propose an approach to reconcile formal methods and computational reflection.
-First, we formalize notions such as computation, implementation,
-and some desirable properties of implementations, notably observability;
-Next, we propose a protocol based on first-class implementations that
-enables navigation up and down the abstraction levels
-at which to view a computation, @emph{at runtime}.
-Then we suggest how such a protocol can
-generalize well-known software techniques and
-trivialize some difficult ones (like code migration);
-Finally, we envision how making virtualization a first-class
-programming construct enables a new software architecture.
+  We propose an approach to reconcile
+  formal methods and computational reflection.
+  First, we propose a formalism for computations and implementations,
+  and express in it some desirable properties of implementations,
+  notably one we dub @emph{observability}.
+  Next, we propose a protocol based on first-class implementations that
+  enables zoom up and down the abstraction levels of a computation,
+  @emph{at runtime}.
+  Then we suggest how such a protocol can
+  generalize well-known software techniques and
+  trivialize some difficult ones (like code migration);
+  Finally, we envision how making virtualization a first-class
+  programming construct enables a new software architecture.
 }
 
-@subject-classification["F.3.2" "Semantics of Programming Languages"]
-@subject-classification["D.3.3" "Language Constructs and Features"]
+@subject-classification["F.3.2"]{@(htmlonlyspace)Semantics of Programming Languages}
+@subject-classification["D.3.3"]{@(htmlonlyspace)Language Constructs and Features}
 
 @keywords{
-first-class implementations,
-reflection,
+  First-class implementations,
+  Reflection
 }
 
 @section{Introduction}
@@ -60,22 +62,23 @@ We use Category Theory to formalize computation,
 but only in elementary ways that require no prior knowledge of it.
 Here is a summary of the concepts used in this article.
 
-A category:
+A @emph{category}
 (a) contains a set @L{Node} of nodes (or @emph{objects}), and
 for any pair of nodes @L{x, y} a set @L{Arrow x y} of arrows
-(or @emph{morphisms}) connecting @m{x} @; (its @emph{domain})
-to @m{y}, @; (its @emph{codomain}),
+(or @emph{morphisms}) connecting @L{x} @; (its @emph{domain})
+to @L{y}, @; (its @emph{codomain}),
 (b) is closed under @emph{composition} of arrows,
 whereby given nodes @L{x, y, z : Node} and
 arrows @L{f : Arrow x y} and @L{g : Arrow y z},
-there is an arrow @L{g @m{\circ} f : Arrow x z},
-(c) for every node @L{x} contains an arrow @L{identity x : Arrow x x},
+there is an arrow @L{g @(circ) f : Arrow x z}, and
+(c) contains for every node @L{x} an arrow @L{identity x : Arrow x x},
 that is neutral for composition left or right.
+
 A @emph{functor} maps the nodes and arrows of one category to
 those of another, preserving the composition structure of arrows
 (and any additional structure, if applicable).
 A category @L{B} is a @emph{subcategory} of @L{A}
-if @L{B}'s nodes and arrows are subsets of @L{A}'s, respectively;
+if @L{B}'s nodes and arrows are subsets of @L{A}'s, respectively.
 @L{B} is said to be a @emph{full} subcategory if for any @L{x, y} in @L{B.Node}
 (and thus also in @L{A.Node}), @L{B.Arrow x y = A.Arrow x y}.
 
@@ -98,7 +101,7 @@ using the Curry-Howard correspondance.
 
 An @emph{interpretation} of a concrete computation @m{C} as
 an abstract computation @m{A} is
-a @emph{partial} functor @m{\Phi} from @m{C} to @m{A}.
+a @emph{partial} functor @(Phi) from @m{C} to @m{A}.
 An @emph{implementation} of @m{A} with @m{C} is the inverse @; (as a profunctor)
 of an interpretation of @m{C} as @m{A},
 i.e. it is a non-deterministic partial injective co-functor.
@@ -114,10 +117,10 @@ as having an abstract @emph{meaning}.
 Partiality allows discrete computations to be implemented with
 continuous computations, infinite ones with finite ones,
 the non-deterministic with the deterministic, etc., and vice-versa.
-However, category theory is usually presented in terms of total functions,
-so we define a partial functor @m{\Phi} from @m{C} to @m{A} as the data of
+Now, category theory is usually presented in terms of total functions,
+so we define a partial functor @(Phi) from @m{C} to @m{A} as the data of
 (1) a full subcategory @m{O} of the observable states of @m{C}, and (2) a
-(total) functor @m{\phi : O → A}.
+(total) functor @m{@(phi) : O → A}.
 
 In general the nodes of a computation encode dynamic execution state such as
 registers, bindings, mutable heap contents, call stacks,
@@ -174,8 +177,9 @@ if the concrete implementation includes a transition @m{g} from @m{c} to @m{c'}
 and @m{c} is observable with interpretation @m{a} while
 and @m{c'} is observable with interpretation @m{a'},
 then there is a valid transition @m{f} from @m{a} to @m{a'} such that
-@m{\Phi(g) = f}.
-In other words, if a (partial) answer is reached using the concrete computation,
+@m{@(Phi)(g) = f}.
+In other words, if an (intermediate or final) answer
+is reached using the concrete computation,
 the answer must be correct in the abstract computation.
 This property is so fundamental that it is actually implied
 by our construction of interpretations as a partial functor.
@@ -270,7 +274,7 @@ and is in the not-advancing subcategory @m{C^0} of @m{C}:
 By applying this extraction strategy systematically, we obtain a protocol
 to deal with implementations as first-class objects,
 where each property defines a trait for typeclasses of implementations,
-and suitable typeclass define categories of computations and implementations.
+and suitable typeclasses define categories of computations and implementations.
 Actually, we obtain two protocols:
 in the first, @emph{reified} protocol,
 nodes @emph{and arrows} of the computations remain first-class objects and
@@ -353,14 +357,14 @@ explicitly by the user, or implicitly by his software proxies.
 
 Our reflective protocol trivializes the notion of code @emph{migration}:
 a given abstract computation @m{A} can be implemented with a computation @m{C}
-with an interpretation @m{\Phi};
-and if @m{\Phi} is @emph{observable}, then @m{C} can be interrupted,
+with an interpretation @(Phi);
+and if @(Phi) is @emph{observable}, then @m{C} can be interrupted,
 an abstract state can be retrieved from its concrete state,
 and can be recompiled to another computation @m{K}
 with an interpretation @m{\Psi},
 from which the computation resumes @emph{with all its dynamic state}.
 Of course, any intermediate representation of states of @m{A} can hopefully
-be optimized away when compiling @m{\Psi^{-1}\circ\Phi};
+be optimized away when compiling @m{@(Psi)^{-1}@(circ)@(Phi)};
 but as a fallback, it is trivial to implement this migration naïvely.
 @; (which should be only a constant factor slowdown in the cases that
 @; the entire data should be copied and sent over anyway.)
@@ -392,7 +396,7 @@ Interacting with software is usually limited to adding semantic layers
 through I/O, configuration, sometimes involving translating front-ends.
 In its general form, migration consists in interacting with software
 by changing semantic layers @emph{below}.
-Migration is not limited to changes "at the bottom",
+Migration is not limited to changes @q{at the bottom},
 by adding one virtualization layer;
 it can happen at any intermediate level, by adding, removing, modifying
 any implementation layer (or slice of consecutive layers) anywhere,
@@ -407,7 +411,7 @@ concurrency control, optimistic evaluation, orthogonal persistence,
 virtualization, macro-expansion, etc., are useful development tools
 that usually are written at great cost in an ad hoc way.
 They then have to be re-implemented for every semantic tower;
-and most of them were effectively lost in most cases
+and most of them are effectively lost in most cases
 when adding a semantic layer on top, at the bottom or in between.
 Developers thus have good tooling only as long as the issues they face
 happen at the abstraction level supported by their development system;
@@ -429,7 +433,7 @@ zoom into lower levels of abstraction if needed, or out of them if possible,
 and locate the bug --- all while the program is running,
 with a guarantee that observing the program doesn't modify its behavior.
 Similarly, orthogonal persistence could be provided efficiently
-@emph{by default} for all computations,
+@emph{by default} to all computations,
 without developers being required to add special hooks;
 and users could modify the parameters of their computations
 including persistence as their needs change
@@ -468,7 +472,7 @@ Now, it is usually desirable for migration to happen automatically
 as directed by an external program, rather than
 to be manually triggered by the user (who couldn't care less about
 most details that migration deals about, whether managing cache lines,
-JIT representation of code or data, or cloud instances availability),
+JIT representation of code or data, or availability of cloud resources),
 or than to follow a heuristic hardwired in the computation itself,
 which would make it both more complex and more rigid than necessary.
 Thus, every computation has its @emph{controller} that can dynamically
@@ -478,13 +482,14 @@ based on whatever signals are relevant.
 Actually, the bottommost computation of a semantic tower is itself
 the topmost computation of another tower
 (which will be trivial only if hittting the @q{bare metal}), so that
-there are is a tower of controllers that follows a tower of
+there is a tower of controllers that follows a tower of
 distinguished current implementations.
 And the controller can itself be a pretty arbitrary computation.
 All these @q{slices} of a computation may or may not be handled
-by the same party; the end-user, application writer, compiler vendor,
-cloud provider, hardware designer, and many more, are each responsible
-for their slice of computation,
+by the same party;
+the end-user, application writer, compiler vendor,
+cloud provider, hardware designer, and many more,
+are each responsible for their slice of computation,
 constrained to implement the upper level with the lower one.
 
 @subsection{Performance and Robustness}
@@ -497,19 +502,20 @@ easier proofs of correctness, better defined access rights,
 and more performance.
 
 For instance, a computation producing video and sound output can be well
-separated from the software that interacts with the user.
+separated from the software that plays it to the user.
 This separation also enables redirection of video and sound output
 without the application even having to know about it:
 the application can keep producing video and sound,
 oblivious to where they are output;
 the user can seamlessly redirect the output from one device to another,
+or broadcast it to an adjustable set of devices,
 while the computation is running.
 From the point of view of the application, I/O effects are declared
 using something akin to a free monad,
 with all effects handled by the controller, a separate program,
 drastically simplifying the application.
 
-There is obviously a cost in maintaining a the semantic tower
+There is obviously a cost in maintaining a semantic tower
 and a controller for every computation;
 but there is also a performance benefit,
 directly related to the semantic simplification:
@@ -556,11 +562,11 @@ The main benefit we envision for a reflective architecture is in
 how it enables a different social organization of developers,
 around more modular software.
 
-Without reflection, developers write @q{application} that provide
+Without reflection, a developer writes an @q{application} that provides
 the entire semantic tower from the user-visible top
 to the @q{bottom} provided by the operating system.
-It takes advanced system administration to virtualize that bottom
-and do anything with it.
+Virtualizing that bottom and doing something with it, while possible,
+takes advanced system administration skills.
 Not having resources to manage (much less develop and debug)
 the combinatorial explosion of potential implementation effects
 that users may desire, application developers can but offer
@@ -568,8 +574,8 @@ sensible defaults for the majority of their users, and
 limited configuration for slightly more advanced users.
 
 With reflection, there is no more fixed bottom for software.
-All software by construction runs virtualized at level of
-whatever high-level language it's written in,
+All software by construction runs virtualized, except not at the CPU level,
+but instead at the level of whatever language it's written in,
 under control of its controller.
 Developers do not have to care about persistence and other
 @q{non-functional requirements} (so-called),
@@ -579,7 +585,7 @@ Orthogonal persistence, infinite undo, time-travel, search, and all kinds
 of other services that can be implemented once as natural transformations
 are made available @q{for free} to all programs,
 under the control of the user, with an infinite variety of parameters,
-that developers do not have to care about any of them.
+while developers do not have to care about any of that.
 
 We anticipate that with a reflective architecture, developers will have
 to write less code, of better quality and wider applicability,
@@ -599,7 +605,7 @@ The rest is prospective --- but we hope that these prospects will inspire
 you to pursue this line of research.
 Our plan is to finish a larger document presenting these ideas, then
 to implement support for first-class implementations in Racket
-or some other Lisp compiler.
+or some other Lisp system.
 
 
 @; full abstraction.
