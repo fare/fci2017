@@ -34,10 +34,11 @@
 @abstract{
 We propose an approach to reconcile formal methods and computational reflection.
 First, we formalize notions such as computation, implementation,
-and the desirable properties of implementations, notably observability;
+and some desirable properties of implementations, notably observability;
 Next, we propose a protocol based on first-class implementations that
 enables navigation up and down the semantic tower of a computation
-@emph{at runtime}, and suggest how such a protocol can
+@emph{at runtime}.
+Then we suggest how such a protocol can
 generalize well-known software techniques and
 trivialize some difficult ones (like code migration);
 Finally, we envision how making virtualization a first-class
@@ -55,27 +56,28 @@ reflection,
 @section{Introduction}
 
 @subsection{Category Theory}
-We formalize computation using Category Theory. As a full discussion
-of Category Theory lies outside the scope of this paper, we summarize
-the relevant aspects. @note{Readers familiar with graphs may find it
-helpful to analogize categories as @emph{the transitive closure of a
-directed multigraph}, bearing in mind that cycles are permitted.}
-(a) a category @m{A} contains a nonempty set of nodes (or @emph{objects}),
-and a set of arrows (or @emph{morphisms}) from one object to another;
-(b) in addition to morphisms connecting distinct objects, categories
-contain @emph{identity morphisms} from each object to itself, and
-objects can be identified by their identity morphism;
-(c) morphisms within a category are @emph{transitive}; that is, for
-any three distinct nodes A, B, and C, a morphism exists from A to C
-@emph{if and only if} morphisms exist from A to B and B to C;
-(d) a @emph{functor} maps the nodes and morphisms of one category to
-those of another, preserving relevant structure (at the very least,
-the structure of which nodes are connected by morphisms).
+We use Category Theory to formalize computation,
+but only in elementary ways that require no prior knowledge of it.
+Here is a summary of the concepts used in this article.
 
-Informally, a category @m{B} is said to be a @emph{subcategory} of @m{A}
-if @m{B}'s objects and morphisms are subsets of @m{A}'s, respectively; and
-@m{B} is said to be a @emph{full} subcategory when @m{B} contains all
-morphisms in @m{A} connecting the objects it shares with @m{B}.
+A category:
+(a) contains a set @L{Node} of nodes (or @emph{objects}), and
+for any pair of nodes @L{x, y} a set @L{Arrow x y} of arrows
+(or @emph{morphisms}) connecting @m{x} @; (its @emph{domain})
+to @m{y}, @; (its @emph{codomain}),
+(b) is closed under @emph{composition} of arrows,
+whereby given nodes @L{x, y, z : Node} and
+arrows @L{f : Arrow x y} and @L{g : Arrow y z},
+there is an arrow @L{g @m{\circ} f : Arrow x z},
+(c) for every node @L{x} contains an arrow @L{identity x : Arrow x x},
+that is neutral for composition left or right.
+A @emph{functor} maps the nodes and arrows of one category to
+those of another, preserving the composition structure of arrows
+(and any additional structure, if applicable).
+A category @L{B} is a @emph{subcategory} of @L{A}
+if @L{B}'s nodes and arrows are subsets of @L{A}'s, respectively;
+@L{B} is said to be a @emph{full} subcategory if for any @L{x, y} in @L{B.Node}
+(and thus also in @L{A.Node}), @L{B.Arrow x y = A.Arrow x y}.
 
 @section{Implementations}
 
@@ -111,7 +113,7 @@ only @emph{observable} concrete states can be interpreted
 as having an abstract meaning.
 Partiality allows discrete computations to be implemented with
 continuous computations, infinite ones with finite ones,
-non-deterministic with deterministic ones, etc., and vice-versa.
+the non-deterministic with the deterministic, etc., and vice-versa.
 However, category theory is usually presented in terms of total functions,
 so we define a partial functor @m{\Phi} from @m{C} to @m{A} as the data of
 (1) a full subcategory @m{O} of the observable states of @m{C}, and (2) a
