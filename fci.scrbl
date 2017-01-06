@@ -449,8 +449,8 @@ must provide dynamic access to this protocol ---
 or be wrapped in an abstraction that does.
 
 At runtime, the system will maintain for every computation
-a first-class semantic tower --- a category all abstraction levels
-to which user or metaprograms may dynamically migrate the computation.
+a first-class semantic tower:
+a category of abstraction levels to which the computation may be migrated.
 In that category are distinguished
 (1) the topmost computation that is being computed,
 that is fixed, specifies the desired semantics of the tower,
