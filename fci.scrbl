@@ -123,7 +123,7 @@ so we define a partial functor @(Phi) from @m{C} to @m{A} as the data of
 (total) functor @m{@(phi) : O → A}.
 
 In general the nodes of a computation encode dynamic execution state such as
-registers, bindings, mutable heap contents, call stacks,
+registers, bindings, mutable store, call stacks,
 messages sent and received, etc.
 An implementation is injective;
 it must distinguish the states it implements, and cannot lose that information,
@@ -252,10 +252,10 @@ By erasing type dependencies, implicit arguments and compile-time values,
 we can also get a less precise type
 suitable for use in run-of-the-mill typed programming languages.
 
-For instance, we saw above that the computational contents of observability is
+For instance, we saw above that the computational content of observability is
 an actual synchronization primitive that enables the retrieval
 of an abstract state from an interrupted concrete computation.
-The specification in Agda would look something like that:
+The specification in Agda would look something like this:
 @verbatim|{
 observe : ∀ {c : C.Node} {a : A.Node} {interpret.node c a}
   (c' : C.Node) {f : C.Arrow c c'} →
@@ -263,7 +263,7 @@ observe : ∀ {c : C.Node} {a : A.Node} {interpret.node c a}
   ∃ (λ {a'' : A.Node} → ∃ (λ {h : A.Arrow a a''} →
   ∃ (λ {not-advancing g} → interpret.arrow (C.compose g f) h)))))
 }|
-The simplified computational contents would have a type as follows,
+The simplified computational content would have a type as follows,
 with all the logical specification being implicit that the argument node @m{c'}
 was reached by starting from an observable node @m{c},
 that the returned arrow starts at the same node @m{c'},
@@ -449,7 +449,7 @@ To fully take advantage of our approach, we envision a system where
 all layers extend our first-class implementation protocol.
 Not only must programming languages or their libraries
 provide suitable primitives;
-what more, interactive systems, whether Emacs, some integrated development
+moreover, interactive systems, whether Emacs, some integrated development
 environment, some operating system shell, some distributed middleware,
 or even operating system API, etc.,
 must provide dynamic access to this protocol ---
@@ -468,13 +468,15 @@ that can be arbitrarily changed within those access rights, and
 the @q{current tower} of levels into which the current implementation
 can be interpreted without needing to migrate.
 
-Now, it is usually desirable for migration to happen automatically
-as directed by an external program, rather than
-to be manually triggered by the user (who couldn't care less about
+Now, it is usually desirable for migration
+to happen automatically as directed by an external program,
+rather than to be manually triggered by the user,
+or rather than to follow a hardwired heuristic.
+The user couldn't care less about
 most details that migration deals about, whether managing cache lines,
-JIT representation of code or data, or availability of cloud resources),
-or than to follow a heuristic hardwired in the computation itself,
-which would make it both more complex and more rigid than necessary.
+JIT representation of code or data, or availability of cloud resources;
+and a heuristic hardwired in the computation itself would make
+the computation both more complex and more rigid than necessary.
 Thus, every computation has its @emph{controller} that can dynamically
 interact with the implementation and incrementally or totally migrate it,
 based on whatever signals are relevant.
@@ -496,7 +498,7 @@ constrained to implement the upper level with the lower one.
 
 Factoring a computation @q{vertically} in @q{horizontal} implementation slices
 as well as in as @q{horizontally} in @q{vertical} modules of functionality
-is we believe a powerful paradigm for organizing software.
+is, we believe, a powerful paradigm for organizing software.
 It promises simpler software, with less development effort, more code reuse,
 easier proofs of correctness, better defined access rights,
 and more performance.
@@ -544,9 +546,9 @@ these cases into consideration.
 Beyond performance, robustness also benefits from
 the reflective factoring of computations into slices:
 applications can contain much less code,
-and that their correctness and security properties are potentially
+and their correctness and security properties are potentially
 much easier to tighten, enforce and verify, compared to traditional systems.
-Controller metaprograms that handle, e.g. video output,
+Controller metaprograms that handle, e.g., video output,
 may remain relatively big and hard to ensure the robustness of ---
 but they can still be smaller and easier to ascertain
 when broken into independent controller meta-objects than
@@ -584,14 +586,15 @@ are not served by developers.
 Orthogonal persistence, infinite undo, time-travel, search, and all kinds
 of other services that can be implemented once as natural transformations
 are made available @q{for free} to all programs,
-under the control of the user, with an infinite variety of parameters,
-while developers do not have to care about any of that.
+under the control of the user,
+with an infinite variety of parameters (and sensible defaults),
+while developers do not have to care about any of the above.
 
 We anticipate that with a reflective architecture, developers will have
 to write less code, of better quality and wider applicability,
 while users get to enjoy more functionality better adapted to their needs.
 Software will not be organized as @q{applications} but as @q{components};
-that interact with each other more like Emacs packages,
+that interact with each other more like Emacs packages or browser plugins,
 except with principled ways of keeping software modular.
 
 
