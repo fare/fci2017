@@ -36,8 +36,8 @@ We propose an approach to reconcile formal methods and computational reflection.
 First, we formalize notions such as computation, implementation,
 and some desirable properties of implementations, notably observability;
 Next, we propose a protocol based on first-class implementations that
-enables navigation up and down the semantic tower of a computation
-@emph{at runtime}.
+enables navigation up and down the abstraction levels
+at which to view a computation, @emph{at runtime}.
 Then we suggest how such a protocol can
 generalize well-known software techniques and
 trivialize some difficult ones (like code migration);
@@ -108,9 +108,9 @@ implementations are the morphisms of its dual category.
 Partiality expresses the fact that most computation states and transitions
 are intermediate states with no direct meaning
 in the abstract computation, as in the proverbial
-non-atomic transfer of resources between two accounts;
+non-atomic transfer of resources between two owners;
 only @emph{observable} concrete states can be interpreted
-as having an abstract meaning.
+as having an abstract @emph{meaning}.
 Partiality allows discrete computations to be implemented with
 continuous computations, infinite ones with finite ones,
 the non-deterministic with the deterministic, etc., and vice-versa.
@@ -118,10 +118,6 @@ However, category theory is usually presented in terms of total functions,
 so we define a partial functor @m{\Phi} from @m{C} to @m{A} as the data of
 (1) a full subcategory @m{O} of the observable states of @m{C}, and (2) a
 (total) functor @m{\phi : O → A}.
-@XXX{
-  Equivalently, the partial functor can be defined as
-  a span from @m{C} to @m{A} where the functor to @m{C} is a full embedding,
-  or as a special case of a profunctor.}
 
 In general the nodes of a computation encode dynamic execution state such as
 registers, bindings, mutable heap contents, call stacks,
@@ -160,12 +156,17 @@ for implementations to possess.
 We outlined elsewhere how to formalize them in Agda,
 together with many variants;
 but we like to illustrate the simpler properties
-as in @(Figure-ref "fig-properties"):
-in these diagrams, horizontal arrows are arrows in a computation
-(morphism of the category), running from left to right;
-vertical arrows are association by the interpretation partial functor,
+as in @(Figure-ref "fig-properties").
+In these diagrams: (a) horizontal arrows are arrows in a computation
+(morphism of the category), with evaluation time running from left to right;
+(b) vertical arrows are interpretation arrows, pointing up,
 with abstract system on top and concrete system at the bottom;
-in black are the hypotheses of the property, in blue are its conclusions
+note that in the above diagrams these vertical arrows are associations
+rather than function declarations;
+also note that implementation arrows would be pointing down,
+but we show interpretation arrows instead
+because @emph{they} are functorial, i.e. preserve structure;
+(c) in black are the hypotheses of the property, in blue are its conclusions
 (assuming the property holds).
 
 The most basic property is @emph{soundness}:
@@ -177,10 +178,12 @@ then there is a valid transition @m{f} from @m{a} to @m{a'} such that
 In other words, if a (partial) answer is reached using the concrete computation,
 the answer must be correct in the abstract computation.
 This property is so fundamental that it is actually implied
-by our construction of @m{\Phi} as a partial functor.
+by our construction of interpretations as a partial functor.
 
 Many other properties are not as ubiquitous, but still desirable.
-For instance, @emph{totality} means that given an abstract state @m{a}
+For instance, @emph{totality}
+(NB: of the implementation, not of the interpretation)
+means that given an abstract state @m{a}
 you can find a concrete state @m{c} that implements it.
 Implementations need not be total (and obviously cannot be
 when implementing an infinite computation using a finite computer).
@@ -250,11 +253,11 @@ an actual synchronization primitive that enables the retrieval
 of an abstract state from an interrupted concrete computation.
 The specification in Agda would look something like that:
 @verbatim|{
-observe : ∀ {c : Concrete.Node} {a : Abstract.Node} {interpret.Node c a}
-  (c' : Concrete.Node) {f : Concrete.Arrow c c'} →
-  ∃ (λ {c'' : Concrete.Node} → ∃ (λ (g : Concrete.Arrow c c'') →
-  ∃ (λ {a'' : Abstract.Node} → ∃ (λ {h : Abstract.Arrow a a''} →
-  ∃ (λ {not-advancing g} → interpret.arrow (Concrete.compose g f) h)))))
+observe : ∀ {c : C.Node} {a : A.Node} {interpret.node c a}
+  (c' : C.Node) {f : C.Arrow c c'} →
+  ∃ (λ {c'' : C.Node} → ∃ (λ (g : C.Arrow c c'') →
+  ∃ (λ {a'' : A.Node} → ∃ (λ {h : A.Arrow a a''} →
+  ∃ (λ {not-advancing g} → interpret.arrow (C.compose g f) h)))))
 }|
 The simplified computational contents would have a type as follows,
 with all the logical specification being implicit that the argument node @m{c'}
@@ -262,7 +265,7 @@ was reached by starting from an observable node @m{c},
 that the returned arrow starts at the same node @m{c'},
 ends at an observable node @m{c''},
 and is in the not-advancing subcategory @m{C^0} of @m{C}:
-@verbatim{observe : Concrete.Node → Concrete.Arrow}
+@verbatim{observe : C.Node → C.Arrow}
 
 By applying this extraction strategy systematically, we obtain a protocol
 to deal with implementations as first-class objects,
