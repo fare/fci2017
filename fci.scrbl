@@ -24,10 +24,17 @@
 @author[#:affil-no ""]{@(htmlonlyspace)François-René Rideau}
 @; @affil[#:affil-no "1"]{@(htmlonlyspace)TUNES}
 
-@copyright{} @; François-René Rideau}
-@doi{} @;10.4230/LIPIcs.xxx.yyy.p}
-@volume-info["(SNAPL editors)" "2" "SNAPL 2017" "1" "1" "1"]
+@copyright{François-René Rideau}
+@doi{55.5555/LIPIcs.xxx.yyy.p}
+@volume-info["(SNAPL editors)" "10" "SNAPL 2017" "20" "30" "40"]
 @event-short-name{SNAPL 2017}
+@subject-classification["F.3.2"]{ Semantics of Programming Languages}
+@; @subject-classification["D.3.3"]{@(htmlonlyspace)Language Constructs and Features}
+@keywords{
+  First-class implementations,
+  Reflection,
+  Software Architecture
+}
 
 @title{Reflection with First-Class Implementations}
 
@@ -45,14 +52,6 @@
   trivialize some difficult ones (like code migration);
   Finally, we envision how making virtualization a first-class
   programming construct enables a new software architecture.
-}
-
-@subject-classification["F.3.2"]{@(htmlonlyspace)Semantics of Programming Languages}
-@subject-classification["D.3.3"]{@(htmlonlyspace)Language Constructs and Features}
-
-@keywords{
-  First-class implementations,
-  Reflection
 }
 
 @section{Introduction}
@@ -102,9 +101,8 @@ using the Curry-Howard correspondance.
 An @emph{interpretation} of a concrete computation @m{C} as
 an abstract computation @m{A} is
 a @emph{partial} functor @(Phi) from @m{C} to @m{A}.
-An @emph{implementation} of @m{A} with @m{C} is the inverse @; (as a profunctor)
-of an interpretation of @m{C} as @m{A},
-i.e. it is a non-deterministic partial injective co-functor.
+Its inverse is called an @emph{implementation} of @m{A} with @m{C};
+it is a non-deterministic partial injective profunctor.
 Interpretations are the morphisms of a category of computations;
 implementations are the morphisms of its dual category.
 
@@ -186,7 +184,7 @@ by our construction of interpretations as a partial functor.
 
 Many other properties are not as ubiquitous, but still desirable.
 For instance, @emph{totality}
-(NB: of the implementation, not of the interpretation)
+(NB: of the implementation, i.e. surjectivity of the interpretation)
 means that given an abstract state @m{a}
 you can find a concrete state @m{c} that implements it.
 Implementations need not be total (and obviously cannot be
@@ -330,10 +328,10 @@ However, the equivalence class @m{A} is not computable,
 whereas the model @m{U} of equivalences understood by the compiler is;
 between the two is thus an irreducible @emph{semantic gap}
 that algorithms can never fill.
-Now you can add static analysis to the picture, whereby some source programs
-can be proven to be in a subset where all nodes have static type @m{\tau},
-at which point specialized variants @m{A_\tau}, @m{U_\tau} and @m{C_\tau}
-can be used based on this knowledge.
+Now add static analysis to the picture: some source program
+can be proven to be in a subset where all nodes have static type @m{\tau};
+therefore better specialized variants @m{A_\tau}, @m{U_\tau} and @m{C_\tau}
+can be used.
 
 Many other topics can be reviewed in this light.
 Tweaking optimizations is about modifying @m{U} in the above model.
