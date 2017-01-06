@@ -4,4 +4,6 @@
 *.pdf
 *.dvi
 *.png
+*.tex
+*.cls
 *~

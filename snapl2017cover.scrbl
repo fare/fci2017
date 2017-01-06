@@ -19,7 +19,7 @@
 
 @title{SNAPL 2017 submission: @(linebreak) Reflection with First-Class Implementations}
 
-@;@raw-latex{\pagestyle{empty}}
+@; (page-numbers-off) @; Doesn't work :-(
 
 @section{Affiliation}
 

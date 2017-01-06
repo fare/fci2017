@@ -10,6 +10,7 @@
   scriblib/autobib
   scriblib/footnote
   scribble/html-properties
+  scribble/latex-properties
   scriblib/render-cond
   (for-syntax syntax/parse))
 
@@ -133,3 +134,8 @@
          (separate-list
           (spacing)
           (map (λ (x) (centered (cadr x))) ps))))))))
+
+;; This doesn't work :-(
+(define (page-numbers-off)
+  (elem ""
+   #:style (make-style "pageStyleEmpty" (list (make-tex-addition "page-numbers-off.sty")))))
