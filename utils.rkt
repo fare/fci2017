@@ -109,7 +109,7 @@
    (λ (mode)
      (case mode
        [(html) " "]
-       [(latex) (raw-latex "~~~~~~")]))))
+       [(latex) (raw-latex "~~~~~~~~~~~~~~~")]))))
 
 (define (separate-list sep l)
   (if (or (null? l) (null? (cdr l))) l

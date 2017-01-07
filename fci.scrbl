@@ -25,8 +25,8 @@
 @; @affil[#:affil-no "1"]{@(htmlonlyspace)TUNES}
 
 @copyright{François-René Rideau}
-@doi{55.5555/LIPIcs.xxx.yyy.p}
-@volume-info["(SNAPL editors)" "10" "SNAPL 2017" "20" "30" "40"]
+@; @doi{00.0000/LIPIcs.000.000.0}
+@volume-info["(SNAPL editors)" "10 " "SNAPL 2017" "20 " "30 " "1 "]
 @event-short-name{SNAPL 2017}
 @subject-classification["F.3.2"]{ Semantics of Programming Languages}
 @; @subject-classification["D.3.3"]{@(htmlonlyspace)Language Constructs and Features}
@@ -41,17 +41,17 @@
 @abstract{
   We propose an approach to reconcile
   formal methods and computational reflection.
-  First, we propose a formalism for computations and implementations,
-  and express in it some desirable properties of implementations,
+  First, we introduce a formalism to study implementations,
+  with which we express some of their desirable properties,
   notably one we dub @emph{observability}.
-  Next, we propose a protocol based on first-class implementations that
-  enables zoom up and down the abstraction levels of a computation,
+  Next, we derive a protocol for first-class implementations,
+  that enables zooming up and down the abstraction levels of a computation
   @emph{at runtime}.
-  Then we suggest how such a protocol can
-  generalize well-known software techniques and
-  trivialize some difficult ones (like code migration);
-  Finally, we envision how making virtualization a first-class
-  programming construct enables a new software architecture.
+  Then we show how this unifies discussion of previously disparate techniques
+  (from static analysis to AOP)
+  and even trivializes some difficult ones (like live code migration).
+  Finally, we envision how our proposed first-class semantic virtualization
+  enables a new software architecture.
 }
 
 @section{Introduction}
@@ -81,6 +81,7 @@ if @L{B}'s nodes and arrows are subsets of @L{A}'s, respectively.
 @L{B} is said to be a @emph{full} subcategory if for any @L{x, y} in @L{B.Node}
 (and thus also in @L{A.Node}), @L{B.Arrow x y = A.Arrow x y}.
 
+
 @section{Implementations}
 
 @subsection{Computations as Categories}
@@ -105,6 +106,7 @@ Its inverse is called an @emph{implementation} of @m{A} with @m{C};
 it is a non-deterministic partial injective profunctor.
 Interpretations are the morphisms of a category of computations;
 implementations are the morphisms of its dual category.
+@; XXX define those terms.
 
 Partiality expresses the fact that most computation states and transitions
 are intermediate states with no direct meaning
@@ -167,7 +169,9 @@ rather than function declarations;
 also note that implementation arrows would be pointing down,
 but we show interpretation arrows instead
 because @emph{they} are functorial, i.e. preserve structure;
-(c) in black are the hypotheses of the property, in blue are its conclusions
+(c) the diagrams commute, i.e. any two ways to follow arrows
+from a node to another lead to equality of the composed arrows;
+(d) in black are the hypotheses of the property, in blue are its conclusions
 (assuming the property holds).
 
 The most basic property is @emph{soundness}:
@@ -184,7 +188,8 @@ by our construction of interpretations as a partial functor.
 
 Many other properties are not as ubiquitous, but still desirable.
 For instance, @emph{totality}
-(NB: of the implementation, i.e. surjectivity of the interpretation)
+(NB: of the implementation, from nodes,
+i.e. node-surjectivity of the interpretation)
 means that given an abstract state @m{a}
 you can find a concrete state @m{c} that implements it.
 Implementations need not be total (and obviously cannot be
@@ -208,7 +213,7 @@ for @q{long enough} runs of the concrete computation,
 the abstract computation will have advanced @q{some}.
 One constructive variant, @emph{bounded liveness},
 assumes some additive metric for each of
-the abstract and concrete computation, and states that
+the abstract and concrete computations, and states that
 runs above a minimum length @m{l_c} in the concrete computation,
 though they may not reach an observable state,
 must run @q{past} an observable state that can be interpreted as
@@ -218,7 +223,7 @@ Now, our biggest contribution is the notion of @emph{observability},
 that allows to retrieve an abstract computation state from an arbitrary
 concrete computation state, by first synchronizing to an observable state
 through a narrow enough subset @m{C^0} of @m{C}
-(that e.g. doesn't involve blocking on I/O or
+(that e.g. does not involve blocking on I/O or
 spending more than a fixed amount of some resources).
 Indeed, when a concrete computation is interrupted,
 it will in general be in an intermediate state that is not observable
@@ -286,7 +291,8 @@ the represented computation is concerned).
 The key functions to switch between these two protocols are
 @tt{perform.node: Node → State} and
 @tt{perform.arrow: Arrow → State → Effect State} where
-@tt{Effect} is a suitable monad --- and their @q{inverses}
+@tt{State} is the @q{actual} machine state
+and @tt{Effect} its @q{actual} effect monad --- and their @q{inverses}
 @tt{record.node: State → Node} and
 @tt{record.arrow: State → (State → Effect State) → Effect Arrow}.
 The reflective protocol enables navigation up and down
@@ -306,7 +312,7 @@ a computation's semantic tower --- while it is running.
      ("abstractInterpretation" "Static analysis"))))
 
 Modeling computations as first-class categories
-can shed a new light on familiar processes.
+can shed a new light on familiar activities.
 
 Implementations can be composed and decomposed: thus,
 complex implementations can be broken down into
@@ -358,21 +364,21 @@ a given abstract computation @m{A} can be implemented with a computation @m{C}
 with an interpretation @(Phi);
 and if @(Phi) is @emph{observable}, then @m{C} can be interrupted,
 an abstract state can be retrieved from its concrete state,
-and can be recompiled to another computation @m{K}
-with an interpretation @m{\Psi},
+and that state can be re-implemented with another computation @m{K}
+with an interpretation @(Psi),
 from which the computation resumes @emph{with all its dynamic state}.
 Of course, any intermediate representation of states of @m{A} can hopefully
 be optimized away when compiling @m{@(Psi)^{-1}@(circ)@(Phi)};
 but as a fallback, it is trivial to implement this migration naïvely.
-@; (which should be only a constant factor slowdown in the cases that
-@; the entire data should be copied and sent over anyway.)
+@; (which should be only a constant factor slowdown from optimal in the cases
+@; that the entire data should be copied and sent over anyway.)
 
 Many existing phenomena can be seen as migration:
-obviously, moving processes from one computer to another while it's running;
+obviously, moving processes from one computer to another while it is running;
 which given a high-level language can now be done
 despite very different hardware architectures,
 without introducing some slow common virtual machine.
-But Garbage Collection can also be seen as a change of representation
+But Garbage Collection can also be seen as a change in the representation
 of an abstract graph using addressed memory cells.
 Process synchronization can be seen as observing a collection of
 two (or more) processes as a shared abstract computation then switching back
@@ -385,7 +391,7 @@ dynamic refactoring, can be viewed as migration.
 Our conceptual framework will hopefully make it easier to develop these
 difficult transformations in a provably correct way,
 and to automate migration, refactoring, upgrade, optimization, etc.,
-of server processes without loss of service or corruption of data
+of server processes without loss of service or corruption of data,
 when the short useful life of the underlying software and hardware stacks
 is all too predictable.
 
@@ -414,22 +420,24 @@ when adding a semantic layer on top, at the bottom or in between.
 Developers thus have good tooling only as long as the issues they face
 happen at the abstraction level supported by their development system;
 if they happen at a higher or lower level, the quality of their tooling
-drops back to zero.
+quickly drops back to zero.
 
 We conjecture that all these techniques can be seen as
-@emph{natural transformations} of implementations (viewed as profunctors).
-They can thus be written in a generic way that applies to all implementations
-that expose a suitable extension of our first-class implementation protocol.
+@emph{natural transformations} of implementations.
+@; (extending the Category Theory concept of natural transformation to profunctors.)
+In layman terms, this means that they can be written in a generic way
+that uniformly applies to all implementations that expose
+suitable variants of our first-class implementation protocol.
 They can then be made automatically available to all computations
 developed using our formalism, and preserved when
-adding, removing or recomposing semantic layers in arbitrary ways.
+arbitrarily adding, removing or recomposing semantic layers.
 
 Therefore, a developer could start a program,
 notice some weird behavior when some conditions happen,
 enable time-travel debugging to explain the behavior,
 zoom into lower levels of abstraction if needed, or out of them if possible,
 and locate the bug --- all while the program is running,
-with a guarantee that observing the program doesn't modify its behavior.
+with a guarantee that observing the program does not modify its behavior.
 Similarly, orthogonal persistence could be provided efficiently
 @emph{by default} to all computations,
 without developers being required to add special hooks;
@@ -443,14 +451,14 @@ all of that @emph{at runtime} without losing data.
 
 @subsection{First-Class Semantic Tower}
 
-To fully take advantage of our approach, we envision a system where
+To take full advantage of our approach, we envision a system where
 all layers extend our first-class implementation protocol.
 Not only must programming languages or their libraries
-provide suitable primitives;
-moreover, interactive systems, whether Emacs, some integrated development
+provide suitable primitives ---
+all interactive systems, whether Emacs, some integrated development
 environment, some operating system shell, some distributed middleware,
 or even operating system API, etc.,
-must provide dynamic access to this protocol ---
+must also provide dynamic access to this protocol,
 or be wrapped in an abstraction that does.
 
 At runtime, the system will maintain for every computation
@@ -462,29 +470,30 @@ that is fixed, specifies the desired semantics of the tower,
 and limits the access rights of all implementations,
 (2) and the bottommost computation that currently implements the above,
 that can be arbitrarily changed within those access rights, and
-(3) between the two (and optionally also above the first one),
+(3) between the two (and optionally also above the former),
 the @q{current tower} of levels into which the current implementation
-can be interpreted without needing to migrate.
+can be interpreted without the need to migrate.
 
 Now, it is usually desirable for migration
 to happen automatically as directed by an external program,
 rather than to be manually triggered by the user,
-or rather than to follow a hardwired heuristic.
-The user couldn't care less about
+or to follow a hardwired heuristic.
+The user could not care less about
 most details that migration deals about, whether managing cache lines,
-JIT representation of code or data, or availability of cloud resources;
-and a heuristic hardwired in the computation itself would make
-the computation both more complex and more rigid than necessary.
+representating JIT code or data, or tracking availability of cloud resources;
+and a heuristic hardwired in the computation would make that computation
+both more complex and more rigid than necessary.
 Thus, every computation has its @emph{controller} that can dynamically
 interact with the implementation and incrementally or totally migrate it,
 based on whatever signals are relevant.
 
 Actually, the bottommost computation of a semantic tower is itself
 the topmost computation of another tower
-(which will be trivial only if hittting the @q{bare metal}), so that
-there is a tower of controllers that follows a tower of
-distinguished current implementations.
-And the controller can itself be a pretty arbitrary computation.
+(with that tower becoming trivial when the topmost computation hits the @q{bare metal}).
+Thus there is a tower of controllers, that follows a tower of
+distinguished current implementations;
+and the controllers are themselves pretty arbitrary computations,
+with their own towers, etc.
 All these @q{slices} of a computation may or may not be handled
 by the same party;
 the end-user, application writer, compiler vendor,
@@ -494,26 +503,28 @@ constrained to implement the upper level with the lower one.
 
 @subsection{Performance and Robustness}
 
-Factoring a computation @q{vertically} in @q{horizontal} implementation slices
-as well as in as @q{horizontally} in @q{vertical} modules of functionality
+Factoring a computation not just
+@q{horizontally} in @q{vertical} modules of functionality,
+but also @q{vertically} in @q{horizontal} implementation slices,
 is, we believe, a powerful paradigm for organizing software.
 It promises simpler software, with less development effort, more code reuse,
 easier proofs of correctness, better defined access rights,
 and more performance.
 
-For instance, a computation producing video and sound output can be well
+For instance, a computation generating video and sound can be well
 separated from the software that plays it to the user.
-This separation also enables redirection of video and sound output
+This separation also enables I/O redirection
 without the application even having to know about it:
-the application can keep producing video and sound,
+the application can keep generating video and sound,
 oblivious to where they are output;
-the user can seamlessly redirect the output from one device to another,
+the user can seamlessly redirect the output from one device
+to the input of another,
 or broadcast it to an adjustable set of devices,
 while the computation is running.
-From the point of view of the application, I/O effects are declared
-using something akin to a free monad,
-with all effects handled by the controller, a separate program,
-drastically simplifying the application.
+From the point of view of the application,
+I/O effects are system calls into an outside program, the controller,
+that handles all requests, drastically simplifying the application
+(in categorical terms, effects are a free monad).
 
 There is obviously a cost in maintaining a semantic tower
 and a controller for every computation;
@@ -521,8 +532,8 @@ but there is also a performance benefit,
 directly related to the semantic simplification:
 implementations can directly bang bits to the proper devices
 or otherwise directly communicate with each other or inline calls,
-and there needs be no extra copying, marshalling,
-or sources of slowness and high latency at any moment.
+and there needs be no extra copying, marshalling, context-switching,
+or sources of slowness and high latency.
 Indeed, data routing, access control, code and data versioning and upgrade,
 etc., can now be resolved at a combination of compile-time and link-time,
 that can happen dynamically when the implementation is migrated,
@@ -532,7 +543,7 @@ Low-level code can be generated
 after protocol negotiation and environmental bindings,
 rather being generated before and then have to go
 through indirections or conditional dispatch at every access.
-In many cases, a lot of computation can be eschewed that is not needed
+In many cases, a lot of work can be eschewed that is not needed
 in the current configuration: for instance, video need not even be fully
 decoded or frames generated for a window that is not exposed,
 or music played when the sound is muted;
@@ -546,20 +557,20 @@ the reflective factoring of computations into slices:
 applications can contain much less code,
 and their correctness and security properties are potentially
 much easier to tighten, enforce and verify, compared to traditional systems.
-Controller metaprograms that handle, e.g., video output,
+Controllers that handle, e.g., video output,
 may remain relatively big and hard to ensure the robustness of ---
 but they can still be smaller and easier to ascertain
-when broken into independent controller meta-objects than
+when broken into independent controllers than
 combined as libraries into a big program
 with a combinatorial explosion of potential interactions.
-And there needn't be the performance penalty of a runtime interpreter
+Also there need not be the performance penalty of a runtime interpreter
 running as a server in a separate process.
 
 
 @subsection{Social Architecture}
 
 The main benefit we envision for a reflective architecture is in
-how it enables a different social organization of developers,
+how it enables a different social organization of users and developers,
 around more modular software.
 
 Without reflection, a developer writes an @q{application} that provides
@@ -574,13 +585,13 @@ sensible defaults for the majority of their users, and
 limited configuration for slightly more advanced users.
 
 With reflection, there is no more fixed bottom for software.
-All software by construction runs virtualized, except not at the CPU level,
-but instead at the level of whatever language it's written in,
+All software by construction runs virtualized, just not at the CPU level,
+but instead at the level of whatever language it is written in,
 under control of its controller.
 Developers do not have to care about persistence and other
 @q{non-functional requirements} (so-called),
 and users do not have to be frustrated because their requirements
-are not served by developers.
+are not served by applications.
 Orthogonal persistence, infinite undo, time-travel, search, and all kinds
 of other services that can be implemented once as natural transformations
 are made available @q{for free} to all programs,
@@ -591,9 +602,9 @@ while developers do not have to care about any of the above.
 We anticipate that with a reflective architecture, developers will have
 to write less code, of better quality and wider applicability,
 while users get to enjoy more functionality better adapted to their needs.
-Software will not be organized as @q{applications} but as @q{components};
+Software will not be organized as @q{applications} but as @q{components},
 that interact with each other more like Emacs packages or browser plugins,
-except with principled ways of keeping software modular.
+except with more principled ways of keeping software modular.
 
 
 @section{Conclusion and Future Work}
