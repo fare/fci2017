@@ -480,7 +480,7 @@ rather than to be manually triggered by the user,
 or to follow a hardwired heuristic.
 The user could not care less about
 most details that migration deals about, whether managing cache lines,
-representating JIT code or data, or tracking availability of cloud resources;
+representing JIT code or data, or tracking availability of cloud resources;
 and a heuristic hardwired in the computation would make that computation
 both more complex and more rigid than necessary.
 Thus, every computation has its @emph{controller} that can dynamically
