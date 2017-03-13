@@ -262,14 +262,14 @@ The specification in Agda would look something like this:
 @verbatim|{
 observe : ∀ {c : C.Node} {a : A.Node} {interpret.node c a}
   (c' : C.Node) {f : C.Arrow c c'} →
-  ∃ (λ {c'' : C.Node} → ∃ (λ (g : C.Arrow c c'') →
+  ∃ (λ {c'' : C.Node} → ∃ (λ (g : C.Arrow c' c'') →
   ∃ (λ {a'' : A.Node} → ∃ (λ {h : A.Arrow a a''} →
   ∃ (λ {not-advancing g} → interpret.arrow (C.compose g f) h)))))
 }|
 The simplified computational content would have a type as follows,
 with all the logical specification being implicit that the argument node @m{c'}
-was reached by starting from an observable node @m{c},
-that the returned arrow starts at the same node @m{c'},
+was reached by starting from an implicit observable node @m{c},
+that the returned arrow @m{g} starts at the same node @m{c'},
 ends at an observable node @m{c''},
 and is in the not-advancing subcategory @m{C^0} of @m{C}:
 @verbatim{observe : C.Node → C.Arrow}
