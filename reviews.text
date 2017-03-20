@@ -1,0 +1,99 @@
+Reviews
+=======
+
+Here are the reviews the paper got for SNAPL 2017 (at commit 94027f5a):
+
+
+Please find enclosed the reviews for your paper Reflection with First-Class Implementations.
+
+--Ras and Shriram
+
+
+----------------------- REVIEW 1 ---------------------
+PAPER: 6
+TITLE: Reflection with First-Class Implementations
+AUTHORS: François-René Rideau
+
+Overall evaluation: -3
+
+----------- Paper summary -----------
+Advocates for a model of computation based on category theory. The model can be summarized in two dimensions with time going left to right and abstraction down to up (this is a standard model of abstraction in distributed systems used to perform abstraction/refinement simulation proofs). The idea is that this model of computation supports a perspective in which various operations such as computation migration and reflection are easily supported.
+
+----------- Overall evaluation -----------
+My major problem with this paper is that I don't see how the formalism connects with a possible implementation that would deliver on the vision of the paper. The paper basically has a very abstract model of computation and argues how it is possible to view various operations such as reflection etc. in this model. The model of computation is missing enough details so that, at least to me, there is not enough structure to make the connection between the vision and reality compelling enough for me to appreciate. Even a very basic implementation might provide enough details.
+
+
+----------------------- REVIEW 2 ---------------------
+PAPER: 6
+TITLE: Reflection with First-Class Implementations
+AUTHORS: François-René Rideau
+
+Overall evaluation: -1
+
+----------- Paper summary -----------
+The stated objective of this paper is to reconcile formal methods with computational reflection. In particular, the paper proposes a categorical model of computations, relating implementations and their abstractions. The model is used to describe desirable properties of implementations, in particular observability, which corresponds to the possibility of finding a nearby concrete state that can be observed in the abstract domain.
+The paper then elaborates on how this model allows to capture different approaches to computation, including static analysis, compilation and optimizations, AOP, etc.
+
+----------- Overall evaluation -----------
+This is a hard paper to assess. On the one hand, it starts with a clear story of a categorical model that makes sense, and in which a number of interesting phenomena can be described. On the other hand, it very quickly falls into a land of speculative assertions that are very hard to follow, let alone believe. As such, I really can't recommend acceptance, but I will happily differ to other reviewers if they "see the light".
+
+As far as I'm concerned, the paper contains too many unsubstantiated claims and too few related work discussions.
+
+First of all, the major claimed contribution is observability. The property is clearly interesting. It is quite close to bisimulation, but is indeed different. However, I would be surprised if the process calculi literature hasn't come up with that notion already. Considering that the paper does not mention any related work in these areas, we have to take it for granted that this is indeed new.
+
+Then, a number of fast and bold claims are made, such as:
+
+- "By applying this extraction strategy systematically, we obtain a protocol to deal with implementations as first-class objects, where each property defines a trait for typeclasses of implementations, and suitable typeclasses define categories of computations and implementations."
+
+what does this mean precisely? at what level of discourse can I understand this statement?
+
+- "Aspect-oriented programming becomes constraint logic metaprogramming whereby multiple computations Ai each have a forgetful interpretation to a joint computation J, and a concrete computation C is sought that simultaneously implements all of them (and makes the diagram commute)."
+
+again, this is quite vague. It would help if figure 2 would include the suggested diagram. Even then, it's unclear what to do with the description.
+
+Sections 4 and 5 are extremely speculative and unclear to me. Each of the points discussed is a very challenging topic. It is clear that the beauty of the abstract description is that it allows to observe otherwise hidden commonalities, but I don't see really how this can be turned into some useful action.
+
+For instance, the paper claims that one could just "turn on" omniscient debugging after the fact. How can that be realized in practice? Similarly, one can one dream of writing a highly abstract macro system and then be able to automatically derive concrete instances of it for any computation, at any level? I don't know if this is really what the paper is claiming, but that's what I'm reading from it.
+
+Then: "At runtime, the system will maintain for every computation a first-class semantic tower: a category of abstraction levels to which the computation may be migrated."
+The paper then talks about tower of controllers, each with their own tower, etc. I'm lost.
+
+To help grounding the discussion, at the very least the discourse should relate to existing work in different dimensions. For instance:
+- bisimulation (and similar notions)
+- Smith's level shifting processor
+- connection with DSU
+- AOP through the lens of category theory: see Tabareau at FOAL 2011, which relates AOP and 2-categories
+At present the paper has only one reference!
+
+
+----------------------- REVIEW 3 ---------------------
+PAPER: 6
+TITLE: Reflection with First-Class Implementations
+AUTHORS: François-René Rideau
+
+Overall evaluation: -1
+
+----------- Paper summary -----------
+This paper develops the idea of "observability" in a categorical framework and presents potential applications to a large number of analyses and tools.
+
+----------- Overall evaluation -----------
+This paper has the germ of an interesting idea: can we apply an abstract characterization of what it means for a computation to be observable to various problems in programming language implementations? I am a big fan of studying ideas at higher levels of abstraction (provided one gets leverage from doing so), so I like the approach.
+
+But while I was predisposed to like this paper, I'm afraid I cannot argue for its acceptance at SNAPL. The main idea is only presented in a somewhat vague manner, and although the paper *mentions* many potential applications, it does not provide any formal evidence to back them up. This raises two concerns: (i) it's not clear whether the idea "has legs" and (ii) it's not clear whether this will lead to an interesting presentation and follow-on discussion at SNAPL -- the main criterion for acceptance identified by the SNAPL PC Chairs.
+
+My main suggestion for improving the paper would be to develop one or two complete examples that fully utilize the features of the framework you are working in. For example, maybe you could instantiate the framework with a specific class of computations and then show how to do migration, and, more importantly, how to reason about the correctness of such a migration using the properties you get "for free." Not only would this make for fascinating reading, it would ground and illustrate your definitions. In its current form, the paper mentions a large number of potential applications, but does not provide evidence that they will actually work.
+
+The stragegy used in this paper, namely starting out by reviewing basic definitions from category theory is rather risky, since readers without the appropriate background will be alienated, and others will lose interest due to past experiences with categorical papers. I'll observe that the paper does not actually use very many categorical concepts (the discussion of natural transformations in Section 4.2 being an exception, although the details are somewhat vague so this is hard to evaluate). It's possible that one could carry out the techincal development at a lower level of abstraction (e.g., a property of operational semantics or transition systems). This might make the paper more accessible and interesting. On the flip side, if there are categorical concepts that are being put to work here, then they should be drawn out much more prominently.
+
+Finally, another weakness of the paper is that it does not make any attempt to locate its contributions and position them with respect to the literature. Specifically, various notions of observability have been extensively studied -- c.f., the many variants of bisimulation in the process algebra literature -- but the paper only contains a single citation (to PCLSRing). It's unclear whether the presented studied here is different, and what the impacts of those differences are...
+
+Typos and Minor Nits:
+
+* p1: Do you mean computation *is* a category? Or that you consider computation *in* a category?
+
+* p2: The operational description of observability makes sense at an intuitive level. But I could not connect it with the Diagram in Figure 1 on my first pass through the paper. For example, how does it ensure that no blocking I/O takes place? Does the diagram imply that there does *not* exist a mapping under Phi from c' to any a'?
+
+* p3: I now see that the not-advancing subcategory addresses one of my points of confusion on the previous page. It would have been helpful to define this earlier.
+
+* p6: My understanding would have been helped by showing some concrete examples of what fails in the absence of naturality.
+

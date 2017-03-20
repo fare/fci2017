@@ -26,8 +26,8 @@
 
 @copyright{François-René Rideau}
 @; @doi{00.0000/LIPIcs.000.000.0}
-@volume-info["(SNAPL editors)" "10 " "SNAPL 2017" "20 " "30 " "1 "]
-@event-short-name{SNAPL 2017}
+@; @volume-info["(SNAPL editors)" "10 " "SNAPL 2017" "20 " "30 " "1 "]
+@; @event-short-name{SNAPL 2017}
 @subject-classification["F.3.2"]{ Semantics of Programming Languages}
 @; @subject-classification["D.3.3"]{@(htmlonlyspace)Language Constructs and Features}
 @keywords{

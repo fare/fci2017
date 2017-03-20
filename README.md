@@ -1,7 +1,7 @@
 Reflection with First-Class Implementations
 ===========================================
 
-This is my proposal for a paper at
+This is my rejected proposal for a paper at
 [SNAPL 2017](http://snapl.org/2017/cfp.html).
 
 Viewing the article
